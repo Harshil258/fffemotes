@@ -1,0 +1,18 @@
+{
+  "parameters": {
+    "ad_interval": {
+      "defaultValue": {
+        "value": "3"
+      },
+      "valueType": "INT",
+      "description": "Show interstitial ad webview every Nth click"
+    },
+    "ad_link": {
+      "defaultValue": {
+        "value": "www.google.com"
+      },
+      "valueType": "STRING",
+      "description": "The target website link loaded in the interstitial webview ad"
+    }
+  }
+}
