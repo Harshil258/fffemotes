@@ -77,9 +77,16 @@ jobs:
           path: build/app/outputs/bundle/release/app-release.aab
 
       - name: Create Release and Upload Assets
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'release'
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v1.0.0-build-{0}', github.run_number) }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && format('FFFEmotes {0}', github.ref_name) || format('FFFEmotes Build v1.0.0 (Build #{0})', github.run_number) }}
+          body: |
+            Automated build assets for FFFEmotes.
+            Commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
           files: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
