@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as custom_tabs;
 import '../app_theme.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/neon_button.dart';
@@ -232,6 +233,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+
+            // ── Section: LEGAL & SECURITY ──────────────────────────────────
+            Row(
+              children: [
+                Container(
+                  width: 3,
+                  height: 18,
+                  decoration: const BoxDecoration(
+                    color: AppColors.accentCyan,
+                    borderRadius: BorderRadius.all(Radius.circular(2)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'LEGAL & SECURITY',
+                  style: AppTextStyles.sectionTitle.copyWith(letterSpacing: 2),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            GlassCard(
+              borderColor: AppColors.borderCyan.withValues(alpha: 0.3),
+              child: _buildActionTile(
+                title: 'PRIVACY POLICY',
+                subtitle: 'Review privacy policy and data collection rules.',
+                icon: Icons.privacy_tip_rounded,
+                onTap: () => _launchPrivacyPolicy(context),
+              ),
+            ),
             const SizedBox(height: 32),
 
             // ── Action: RESET SYSTEM ──────────────────────────────────────
@@ -357,6 +389,93 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _launchPrivacyPolicy(BuildContext context) async {
+    final url = AdManager.privacyPolicyUrl;
+    try {
+      await custom_tabs.launchUrl(
+        Uri.parse(url),
+        customTabsOptions: custom_tabs.CustomTabsOptions(
+          colorSchemes: custom_tabs.CustomTabsColorSchemes.defaults(
+            toolbarColor: AppColors.bgDark,
+          ),
+          shareState: custom_tabs.CustomTabsShareState.on,
+          urlBarHidingEnabled: true,
+          showTitle: true,
+          closeButton: custom_tabs.CustomTabsCloseButton(
+            icon: custom_tabs.CustomTabsCloseButtonIcons.back,
+          ),
+        ),
+        safariVCOptions: custom_tabs.SafariViewControllerOptions(
+          preferredBarTintColor: AppColors.bgDark,
+          preferredControlTintColor: AppColors.accentCyan,
+          barCollapsingEnabled: true,
+          dismissButtonStyle: custom_tabs.SafariViewControllerDismissButtonStyle.close,
+        ),
+      );
+    } catch (e) {
+      debugPrint("Could not launch Privacy Policy: $e");
+    }
+  }
+
+  Widget _buildActionTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.bgDarkest,
+              border: Border.all(
+                color: AppColors.borderCyan.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Icon(icon, color: AppColors.accentCyan, size: 18),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.accentCyan,
+            size: 20,
+          ),
+        ],
+      ),
     );
   }
 }

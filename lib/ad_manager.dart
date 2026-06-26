@@ -26,6 +26,7 @@ class AdManager {
       await remoteConfig.setDefaults(const {
         'ad_interval': 3,
         'ad_link': 'www.google.com',
+        'privacy_policy_url': 'https://www.google.com',
       });
 
       // Fetch latest values from the cloud
@@ -63,6 +64,19 @@ class AdManager {
       }
     }
     return "www.google.com"; // Fallback default
+  }
+
+  /// Get the privacy policy link/url
+  static String get privacyPolicyUrl {
+    if (_firebaseInitialized) {
+      try {
+        final val = FirebaseRemoteConfig.instance.getString('privacy_policy_url');
+        if (val.isNotEmpty) return val;
+      } catch (e) {
+        debugPrint("Error reading privacy_policy_url from Remote Config: $e");
+      }
+    }
+    return "https://www.google.com"; // Fallback default
   }
 
   /// Increment click count and show ad screen if threshold reached.
